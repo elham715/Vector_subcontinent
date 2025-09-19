@@ -74,6 +74,7 @@
       height: 100%;
       position: absolute;
       cursor: pointer;
+      z-index: 2; /* Ensure clickable area */
     }
 
     .checkmark {
@@ -85,6 +86,7 @@
       border: 2px solid #ccc;
       border-radius: 6px;
       transition: all 0.3s ease;
+      transform-style: preserve-3d; /* Helps rendering */
     }
 
     .checkbox-container input:checked + .checkmark {
@@ -92,7 +94,7 @@
       border-color: #2ed573;
     }
 
-    .checkmark:after {
+    .checkmark::after {
       content: '';
       position: absolute;
       display: none;
@@ -103,10 +105,11 @@
       border: solid white;
       border-width: 0 2px 2px 0;
       transform: rotate(45deg);
+      z-index: 1;
     }
 
-    .checkbox-container input:checked + .checkmark:after {
-      display: block;
+    .checkbox-container input:checked + .checkmark::after {
+      display: block; /* ✅ This now works reliably */
     }
 
     .concept-title {
@@ -122,7 +125,6 @@
       font-weight: 300;
     }
 
-    /* Optional micro-interaction */
     .checklist-item:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 16px rgba(0,0,0,0.06);
@@ -133,7 +135,6 @@
       .checklist-item { padding: 20px; }
     }
 
-    /* Footer credit (optional, remove if not needed) */
     .footer {
       text-align: center;
       margin-top: 60px;
@@ -157,44 +158,40 @@
   </div>
 
   <script>
-    // Define your 4 concepts here — customize titles & descriptions!
     const CONCEPTS = [
       {
         id: 'concept-1',
-        title: 'SubContinent 1',
-        desc: 'Vector Basic ,Resultant And Components'
+        title: 'Indus Valley Civilization',
+        desc: 'Understand urban planning, trade, and decline of one of the world’s earliest civilizations.'
       },
       {
-        id: 'SubContinent 2',
+        id: 'concept-2',
         title: 'Mauryan Empire',
-        desc: 'Relative Velocity & River Boar'
+        desc: 'Study Ashoka’s reign, administration, and spread of Buddhism across Asia.'
       },
       {
         id: 'concept-3',
-        title: 'SubContinent 3',
-        desc: 'Dot Product And Cross Products Of Vectors'
+        title: 'Delhi Sultanate',
+        desc: 'Explore Turkic rule, architecture, and cultural synthesis in medieval India.'
       },
       {
         id: 'concept-4',
-        title: 'SubContinent 4',
-        desc: 'Vector Calculus'
+        title: 'Mughal Era & Legacy',
+        desc: 'Analyze Akbar’s policies, art, economy, and long-term impact on South Asia.'
       }
     ];
 
     const STORAGE_KEY = 'subcontinentChecklist';
 
-    // Load saved state from localStorage
     function loadState() {
       const saved = localStorage.getItem(STORAGE_KEY);
       return saved ? JSON.parse(saved) : {};
     }
 
-    // Save state to localStorage
     function saveState(state) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
-    // Render checklist
     function renderChecklist() {
       const container = document.getElementById('checklist');
       const savedState = loadState();
@@ -212,20 +209,16 @@
         </div>
       `).join('');
 
-      // Attach event listeners
       document.querySelectorAll('.checkbox-container input').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
           const itemId = this.parentElement.parentElement.dataset.id;
           const newState = { ...loadState(), [itemId]: this.checked };
           saveState(newState);
-
-          // Toggle visual class
           this.closest('.checklist-item').classList.toggle('checked', this.checked);
         });
       });
     }
 
-    // Initialize on load
     document.addEventListener('DOMContentLoaded', renderChecklist);
   </script>
 </body>
