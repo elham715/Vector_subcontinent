@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SubContinent Study Checklist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #FFFFFF;
+      color: #333;
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 8px;
+      color: #222;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-weight: 300;
+      color: #666;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+
+    .checklist-item {
+      background: #fafafa;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .checklist-item.checked {
+      background: #f0fff4;
+      border-color: #a7e8b9;
+      box-shadow: 0 4px 12px rgba(46, 213, 115, 0.08);
+    }
+
+    .checkbox-container {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      margin-right: 16px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .checkbox-container input {
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      cursor: pointer;
+    }
+
+    .checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .checkbox-container input:checked + .checkmark {
+      background: #2ed573;
+      border-color: #2ed573;
+    }
+
+    .checkmark:after {
+      content: '';
+      position: absolute;
+      display: none;
+      left: 7px;
+      top: 3px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .checkbox-container input:checked + .checkmark:after {
+      display: block;
+    }
+
+    .concept-title {
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #222;
+    }
+
+    .concept-desc {
+      font-size: 0.95rem;
+      color: #666;
+      font-weight: 300;
+    }
+
+    /* Optional micro-interaction */
+    .checklist-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      .checklist-item { padding: 20px; }
+    }
+
+    /* Footer credit (optional, remove if not needed) */
+    .footer {
+      text-align: center;
+      margin-top: 60px;
+      font-size: 0.85rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📚 SubContinent Concepts Checklist</h1>
+    <p class="subtitle">Master each concept. Tick when done. Progress auto-saved.</p>
+
+    <div class="checklist" id="checklist">
+      <!-- Dynamically filled by JS -->
+    </div>
+
+    <div class="footer">
+      Progress saved locally. Refresh anytime.
+    </div>
+  </div>
+
+  <script>
+    // Define your 4 concepts here — customize titles & descriptions!
+    const CONCEPTS = [
+      {
+        id: 'concept-1',
+        title: 'Indus Valley Civilization',
+        desc: 'Understand urban planning, trade, and decline of one of the world’s earliest civilizations.'
+      },
+      {
+        id: 'concept-2',
+        title: 'Mauryan Empire',
+        desc: 'Study Ashoka’s reign, administration, and spread of Buddhism across Asia.'
+      },
+      {
+        id: 'concept-3',
+        title: 'Delhi Sultanate',
+        desc: 'Explore Turkic rule, architecture, and cultural synthesis in medieval India.'
+      },
+      {
+        id: 'concept-4',
+        title: 'Mughal Era & Legacy',
+        desc: 'Analyze Akbar’s policies, art, economy, and long-term impact on South Asia.'
+      }
+    ];
+
+    const STORAGE_KEY = 'subcontinentChecklist';
+
+    // Load saved state from localStorage
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : {};
+    }
+
+    // Save state to localStorage
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    // Render checklist
+    function renderChecklist() {
+      const container = document.getElementById('checklist');
+      const savedState = loadState();
+
+      container.innerHTML = CONCEPTS.map(concept => `
+        <div class="checklist-item ${savedState[concept.id] ? 'checked' : ''}" data-id="${concept.id}">
+          <div class="checkbox-container">
+            <input type="checkbox" id="${concept.id}" ${savedState[concept.id] ? 'checked' : ''}>
+            <span class="checkmark"></span>
+          </div>
+          <div>
+            <div class="concept-title">${concept.title}</div>
+            <div class="concept-desc">${concept.desc}</div>
+          </div>
+        </div>
+      `).join('');
+
+      // Attach event listeners
+      document.querySelectorAll('.checkbox-container input').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+          const itemId = this.parentElement.parentElement.dataset.id;
+          const newState = { ...loadState(), [itemId]: this.checked };
+          saveState(newState);
+
+          // Toggle visual class
+          this.closest('.checklist-item').classList.toggle('checked', this.checked);
+        });
+      });
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', renderChecklist);
+  </script>
+</body>
+</html>
