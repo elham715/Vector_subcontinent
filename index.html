@@ -3,69 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SubContinent Study Checklist</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <title>SubContinent Checklist</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: 'Inter', sans-serif;
-      background: #FFFFFF;
+      background: white;
       color: #333;
-      line-height: 1.6;
       padding: 40px 20px;
-    }
-
-    .container {
-      max-width: 800px;
+      line-height: 1.5;
+      font-size: 15px;
+      max-width: 700px;
       margin: 0 auto;
     }
 
     h1 {
-      font-size: 2.2rem;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 8px;
-      color: #222;
+      font-weight: 500;
+      font-size: 24px;
+      margin-bottom: 4px;
     }
 
     .subtitle {
-      text-align: center;
-      font-weight: 300;
-      color: #666;
-      margin-bottom: 40px;
-      font-size: 1.1rem;
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 30px;
     }
 
     .checklist-item {
-      background: #fafafa;
-      border: 1px solid #eee;
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 20px;
       display: flex;
       align-items: flex-start;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    }
-
-    .checklist-item.checked {
-      background: #f0fff4;
-      border-color: #a7e8b9;
-      box-shadow: 0 4px 12px rgba(46, 213, 115, 0.08);
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
     }
 
     .checkbox-container {
       position: relative;
-      width: 24px;
-      height: 24px;
-      margin-right: 16px;
+      width: 16px;
+      height: 16px;
+      margin-right: 12px;
       flex-shrink: 0;
-      cursor: pointer;
     }
 
     .checkbox-container input {
@@ -73,153 +49,118 @@
       width: 100%;
       height: 100%;
       position: absolute;
+      top: 0;
+      left: 0;
+      margin: 0;
       cursor: pointer;
-      z-index: 2; /* Ensure clickable area */
+      z-index: 10; /* 👈 Ensure it's on top */
     }
 
     .checkmark {
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      border: 2px solid #ccc;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-      transform-style: preserve-3d; /* Helps rendering */
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #ccc;
+      border-radius: 3px;
+      pointer-events: none; /* 👈 Let clicks pass through to input */
+      transition: all 0.2s ease;
     }
 
     .checkbox-container input:checked + .checkmark {
-      background: #2ed573;
-      border-color: #2ed573;
+      background: #007AFF;
+      border-color: #007AFF;
     }
 
     .checkmark::after {
       content: '';
       position: absolute;
       display: none;
-      left: 7px;
-      top: 3px;
-      width: 5px;
-      height: 10px;
+      left: 4px;
+      top: 1px;
+      width: 3px;
+      height: 7px;
       border: solid white;
-      border-width: 0 2px 2px 0;
+      border-width: 0 1.5px 1.5px 0;
       transform: rotate(45deg);
-      z-index: 1;
     }
 
     .checkbox-container input:checked + .checkmark::after {
-      display: block; /* ✅ This now works reliably */
+      display: block;
     }
 
-    .concept-title {
-      font-size: 1.3rem;
-      font-weight: 500;
-      margin-bottom: 6px;
-      color: #222;
+    .item-text {
+      font-size: 15px;
+      color: #333;
     }
 
-    .concept-desc {
-      font-size: 0.95rem;
-      color: #666;
-      font-weight: 300;
-    }
-
-    .checklist-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-    }
-
-    @media (max-width: 600px) {
-      h1 { font-size: 1.8rem; }
-      .checklist-item { padding: 20px; }
+    .item-desc {
+      font-size: 13px;
+      color: #888;
+      margin-top: 2px;
     }
 
     .footer {
       text-align: center;
-      margin-top: 60px;
-      font-size: 0.85rem;
+      margin-top: 40px;
+      font-size: 12px;
       color: #aaa;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📚 SubContinent Concepts Checklist</h1>
-    <p class="subtitle">Master each concept. Tick when done. Progress auto-saved.</p>
+  <h1>📚 SubContinent Concepts</h1>
+  <p class="subtitle">Check off as you go. Progress saved locally.</p>
 
-    <div class="checklist" id="checklist">
-      <!-- Dynamically filled by JS -->
-    </div>
+  <div id="checklist"></div>
 
-    <div class="footer">
-      Progress saved locally. Refresh anytime.
-    </div>
-  </div>
+  <div class="footer">Refresh anytime — your progress stays.</div>
 
   <script>
     const CONCEPTS = [
-      {
-        id: 'concept-1',
-        title: 'Indus Valley Civilization',
-        desc: 'Understand urban planning, trade, and decline of one of the world’s earliest civilizations.'
-      },
-      {
-        id: 'concept-2',
-        title: 'Mauryan Empire',
-        desc: 'Study Ashoka’s reign, administration, and spread of Buddhism across Asia.'
-      },
-      {
-        id: 'concept-3',
-        title: 'Delhi Sultanate',
-        desc: 'Explore Turkic rule, architecture, and cultural synthesis in medieval India.'
-      },
-      {
-        id: 'concept-4',
-        title: 'Mughal Era & Legacy',
-        desc: 'Analyze Akbar’s policies, art, economy, and long-term impact on South Asia.'
-      }
+      { id: 'c1', title: 'SubContinent 1', desc: 'Ami Elham' },
+      { id: 'c2', title: 'SubContinent 2', desc: 'Hi' },
+      { id: 'c3', title: 'Subcontinent 3', desc: 'HI' },
+      { id: 'c4', title: 'Subcontinent 4', desc: 'Welcome to My World' }
     ];
 
-    const STORAGE_KEY = 'subcontinentChecklist';
+    const KEY = 'subcontinent';
 
-    function loadState() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : {};
+    function load() {
+      return JSON.parse(localStorage.getItem(KEY) || '{}');
     }
 
-    function saveState(state) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    function save(state) {
+      localStorage.setItem(KEY, JSON.stringify(state));
     }
 
-    function renderChecklist() {
-      const container = document.getElementById('checklist');
-      const savedState = loadState();
-
-      container.innerHTML = CONCEPTS.map(concept => `
-        <div class="checklist-item ${savedState[concept.id] ? 'checked' : ''}" data-id="${concept.id}">
+    function render() {
+      const saved = load();
+      document.getElementById('checklist').innerHTML = CONCEPTS.map(c => `
+        <div class="checklist-item">
           <div class="checkbox-container">
-            <input type="checkbox" id="${concept.id}" ${savedState[concept.id] ? 'checked' : ''}>
+            <input type="checkbox" id="${c.id}" ${saved[c.id] ? 'checked' : ''}>
             <span class="checkmark"></span>
           </div>
           <div>
-            <div class="concept-title">${concept.title}</div>
-            <div class="concept-desc">${concept.desc}</div>
+            <div class="item-text">${c.title}</div>
+            <div class="item-desc">${c.desc}</div>
           </div>
         </div>
       `).join('');
 
-      document.querySelectorAll('.checkbox-container input').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-          const itemId = this.parentElement.parentElement.dataset.id;
-          const newState = { ...loadState(), [itemId]: this.checked };
-          saveState(newState);
-          this.closest('.checklist-item').classList.toggle('checked', this.checked);
+      // Re-bind event listeners after render
+      document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+        el.addEventListener('change', () => {
+          const state = load();
+          state[el.id] = el.checked;
+          save(state);
         });
       });
     }
 
-    document.addEventListener('DOMContentLoaded', renderChecklist);
+    document.addEventListener('DOMContentLoaded', render);
   </script>
 </body>
 </html>
